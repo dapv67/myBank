@@ -7,6 +7,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -18,7 +20,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(customizeRequests -> {
                             customizeRequests
-                                    .requestMatchers(HttpMethod.GET,"/api/v1/customers/**").permitAll()
+                                    .requestMatchers(HttpMethod.GET,"/api/v1/customers/**").hasRole("ADMIN")
                                     .requestMatchers(HttpMethod.POST).denyAll()
                                     .anyRequest()
                                     .authenticated();
@@ -30,5 +32,9 @@ public class SecurityConfig {
         //.csrf(Customizer.withDefaults());
 
         return http.build();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
