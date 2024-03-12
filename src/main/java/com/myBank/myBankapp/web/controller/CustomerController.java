@@ -1,6 +1,7 @@
 package com.myBank.myBankapp.web.controller;
 
 import com.myBank.myBankapp.entity.CustomerEntity;
+import com.myBank.myBankapp.exception.EmailSendingException;
 import com.myBank.myBankapp.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,9 @@ public class CustomerController {
 
     @PostMapping("/")
     public ResponseEntity<CustomerEntity> save(@RequestBody CustomerEntity customer) {
+        if(customer.getEmail().isEmpty()){
+            throw new EmailSendingException("Email is required",HttpStatus.BAD_REQUEST.value());
+        }
         return new ResponseEntity<>(customerService.save(customer), HttpStatus.CREATED);
     }
 
